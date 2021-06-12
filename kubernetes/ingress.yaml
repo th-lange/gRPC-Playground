@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: host.com
+spec:
+  rules:
+    - host: special.host.com
+      http:
+        paths:
+          - backend:
+              service:
+                name: com-package-server
+                port:
+                  number: 8080
+            path: /
+            pathType: Prefix
