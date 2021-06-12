@@ -4,20 +4,32 @@ const MaxLength = 2000
 
 
 type MessageReader interface {
-	readMessage() string
+	ReadMessage() string
 }
 
 type MessageReset interface {
-	resetMessage()
+	ResetMessage()
 }
 
 type MessageAdder interface {
-	addMessage(string)
+	AddMessage(string)
 }
 
+type MessageSetter interface {
+	SetMessage(string)
+}
 
 type Message struct {
 	message string
+}
+
+
+func (m *Message)  SetMessage(message string) {
+	msgLen := len(message)
+	if msgLen > 2000 {
+		message = message[msgLen-2000:]
+	}
+	m.message = message
 }
 
 
@@ -30,10 +42,5 @@ func (m *Message)  ResetMessage() {
 }
 
 func (m *Message)  AddMessage(toAdd string) {
-	newMessage := m.message + toAdd
-	msgLen := len(newMessage)
-	if msgLen > 2000 {
-		newMessage = newMessage[len(newMessage)-2000:]
-	}
-	m.message = newMessage
+	m.SetMessage(m.message + toAdd)
 }

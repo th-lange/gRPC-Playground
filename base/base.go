@@ -8,8 +8,7 @@ import (
 
 var HttpPort = ":8080"
 var Message = data.Message{}
-var GrpcRemote = ""
-var GrpcRemotePort = ""
+var GrpcRemoteUri = ""
 var GrpcPort = ""
 var IsGrpcServer = false
 
@@ -17,13 +16,13 @@ var IsGrpcServer = false
 
 func init() {
 	fmt.Println("Setting up Env")
-	setUpPort()
+	setUpHttpPort()
 	setUpGrpc()
 
 }
 
 
-func setUpPort() {
+func setUpHttpPort() {
 	port := os.Getenv("PORT")
 	if port != "" {
 		HttpPort = ":" + port
@@ -31,12 +30,13 @@ func setUpPort() {
 }
 
 func setUpGrpc() {
-	GrpcRemote = os.Getenv("GRPC_REMOTE")
-	GrpcPort = os.Getenv("GRPC_REMOTE_PORT")
+
 	GrpcPort = os.Getenv("GRPC_PORT")
 
 	if GrpcPort != "" {
 		GrpcPort = ":" + GrpcPort
 		IsGrpcServer = true
 	}
+
+	GrpcRemoteUri = os.Getenv("GRPC_REMOTE_URI")
 }

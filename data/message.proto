@@ -2,12 +2,16 @@ syntax = "proto3";
 
 package data;
 
-option go_package = "github.com/example/path/gen;gen";
+option go_package = "data/";
 
 service MessageService {
-  rpc SendMessage (Message) returns (Message) {}
+  rpc SendMessage (MyMessage) returns (MyMessage) {}
+  rpc GetMessage (Empty) returns (MyMessage) {}
 }
 
-message Message {
+message MyMessage {
   string message = 1;
+}
+
+message Empty {
 }

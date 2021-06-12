@@ -3,6 +3,7 @@ package main
 import (
 	"CommunicationsModule/base"
 	"CommunicationsModule/data"
+	"CommunicationsModule/service"
 	"fmt"
 	"github.com/julienschmidt/httprouter"
 	"google.golang.org/grpc"
@@ -10,6 +11,7 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"time"
 )
 
 func getTextHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
@@ -38,8 +40,19 @@ func main() {
 
 	if base.IsGrpcServer {
 		go serveGrpc()
+		serveHttp()
+	} else {
+		// Set Up Initial Messages / Wait for Server
+		for !service.GetExistingMessages() {
+			time.Sleep(5 * time.Second)
+		}
+
+		// Update Messages
+		for {
+			service.SendMessage()
+			time.Sleep(5 * time.Second)
+		}
 	}
-	serveHttp()
 }
 
 
@@ -66,10 +79,11 @@ func serveGrpc() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
-	s := data.Message{}
+	s := service.Server{}
 
 	grpcServer := grpc.NewServer()
 
+	data.RegisterMessageServiceServer(grpcServer, &s)
 	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %s", err)
 	}
